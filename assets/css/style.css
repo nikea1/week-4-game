@@ -1,0 +1,35 @@
+img{
+	margin: 0 auto;
+    display: block;
+}
+
+.clearfix{
+	overflow: auto;
+	clear: both;
+}
+
+.character-card{
+	margin: 0 10px;
+	float: left;
+	border-width: 3px;
+	border-color: green;
+    border-style: solid;
+    width: 150px;
+    height: 120px;
+
+}
+
+.character-name,.character-health{
+	text-align: center;
+}
+
+.wait{
+	background-color: red;
+}
+
+.defender{
+
+	background-color: black;
+	color: white;
+
+}
