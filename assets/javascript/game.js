@@ -33,9 +33,11 @@ $(document).ready(function(){
 	playerChoice[2] = new character("Darth Sidious", "http://placehold.it/120x80", 120);
 	playerChoice[3] = new character("Emperor Palpatine", "http://placehold.it/120x80", 120);
 
+
+
 	//generates players
 	for(var i = 0; i < playerChoice.length; i++){
-	
+		console.log("outside loop "+playerChoice);
 		buildCard();
 	
 	}//end of for loop
@@ -117,7 +119,7 @@ $(document).ready(function(){
 					card_container.append(card_name);
 					card_container.append(card_img);
 					card_container.append(card_health);
-					$('#ememies').append(card_container);
+					$('#enemies').append(card_container);
 			}
 
 		}
@@ -132,7 +134,7 @@ $(document).ready(function(){
 
 	function setDefender(){
 		defenderExist = true;
-		$('#ememies').empty();
+		$('#enemies').empty();
 
 		var card_container = $('<div>')
 		.addClass("character-card defender")
@@ -207,7 +209,7 @@ $(document).ready(function(){
 					card_container.append(card_name);
 					card_container.append(card_img);
 					card_container.append(card_health);
-					$('#ememies').append(card_container);
+					$('#enemies').append(card_container);
 				}
 			}
 
@@ -231,7 +233,8 @@ $(document).ready(function(){
 			setGame();
 
 		});
-
+		console.log(playerChoice[i]);
+		console.log(playerChoice[i].name);
 		var card_name = $('<div>')
 			.addClass("character-name")
 			.text(playerChoice[i].name);
@@ -254,11 +257,32 @@ $(document).ready(function(){
 		//alert("this is a test");
 		console.log("in button " + defenderExist)
 		if(defenderExist){
-		$('#player-message').text(player.name + " does " + player.atk + " damage to " + defender.name + "!");
-		defender.damageRecieved(player.atk);
-		player.strengthen();
-		$('#ememy-message').text(defender.name + " strikes back with " + defender.counter + " damage to " + player.name + "!");
-		player.damageRecieved(defender.counter);
+
+			defender.damageRecieved(player.atk);
+			player.damageRecieved(defender.counter);
+
+			$('#player-message').text(player.name + " does " + player.atk + " damage to " + defender.name + "!");
+			$('#ememy-message').text(defender.name + " strikes back with " + defender.counter + " damage to " + player.name + "!");
+			player.strengthen();
+			
+			if(player.getHp() <= 0){
+				$('#player-message').text("You've been defeated...GAME OVER.");
+				$('#ememy-message').empty();
+				
+				$('#ememy-message').append($('<button>')
+					.text('Restart')
+					.on("click", function(){
+
+						$('#player-message, #defender, #player, #enemies').empty();
+						//buildCard();
+					}));
+
+			}
+			else if(defender.getHp() <= 0){
+
+			}
+
+			
 
 		$('#player .character-health').text(player.hp); //update player 
 		$('#defender .character-health').text(defender.hp);
