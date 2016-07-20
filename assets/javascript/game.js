@@ -17,12 +17,16 @@ $(document).ready(function(){
 		this.strengthen = function(){
 			this.atk += 6;
 		}
+		this.getHp = function(){
+			return this.hp;
+		}
 	}
 
 	var playerChoice = [];
 	var wait = [];
 	var player;
 	var defender;
+	var defenderExist = false;
 
 	playerChoice[0] = new character("Obi-wan-Kenobi", "http://placehold.it/120x80", 120);
 	playerChoice[1] = new character("Luke Skywalker", "http://placehold.it/120x80", 120);
@@ -84,10 +88,14 @@ $(document).ready(function(){
 					.data("chara", playerChoice[i])
 					.on("click", function(){
 
-					console.log("click", $(this).data("chara"));
+					
 					//$(this).addClass("character-player").removeClass("character-choice");
-					defender = $(this).data("chara");
+					
 					//$('#ememies').empty();
+					console.log("flag check: " + defenderExist);
+					if(defenderExist) return;
+					console.log("click", $(this).data("chara"));
+					defender = $(this).data("chara");
 					setDefender();
 
 								
@@ -123,14 +131,15 @@ $(document).ready(function(){
 	}
 
 	function setDefender(){
-
+		defenderExist = true;
 		$('#ememies').empty();
 
 		var card_container = $('<div>')
 		.addClass("character-card defender")
 		.data("chara", defender)
 		.on("click", function(){
-
+			
+			console.log("flag check: " + defenderExist);
 			console.log("click", $(this).data("chara"));
 			//$(this).addClass("character-player").removeClass("character-choice");
 			//player = $(this).data("chara");
@@ -172,10 +181,12 @@ $(document).ready(function(){
 					.data("chara", playerChoice[i])
 					.on("click", function(){
 
+					console.log("flag check: " + defenderExist);
+					if(defenderExist) return;
 					console.log("click", $(this).data("chara"));
 					//$(this).addClass("character-player").removeClass("character-choice");
 					defender = $(this).data("chara");
-					//setDefender()
+					setDefender()
 
 								
 
@@ -240,7 +251,25 @@ $(document).ready(function(){
 	}
 
 	$('button').on("click", function(){
-		alert("this is a test");
+		//alert("this is a test");
+		console.log("in button " + defenderExist)
+		if(defenderExist){
+		$('#player-message').text(player.name + " does " + player.atk + " damage to " + defender.name + "!");
+		defender.damageRecieved(player.atk);
+		player.strengthen();
+		$('#ememy-message').text(defender.name + " strikes back with " + defender.counter + " damage to " + player.name + "!");
+		player.damageRecieved(defender.counter);
+
+		$('#player .character-health').text(player.hp); //update player 
+		$('#defender .character-health').text(defender.hp);
+		}
+		else{
+		$('#player-message').text("There is no one to attack");
+		
+		}
+		//player.damageRecieved(defender.counter);
+		//defender.damageRecieved(player.atk);
+		//player.
 	})
 
 });
