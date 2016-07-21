@@ -28,6 +28,7 @@ $(document).ready(function(){
 	var player;
 	var defender;
 	var defenderExist = false;
+	var playerDead = false;
 
 	playerChoice[0] = new character("Reimu Hakurei", "assets/images/Hakurei.png", 120, 8, 24, "assets/sounds/IN - Maidens Capriccio - Dream Battle.mp3");
 	playerChoice[1] = new character("Marisa Kirisame", "assets/images/Kirisame.png", 100, 5, 5, "assets/sounds/Love-coloured Master Spark.mp3");
@@ -141,21 +142,30 @@ $(document).ready(function(){
 			$(target).append(card_container);
 	}
 
+	//Attack button
 	$('button').on("click", function(){
 		//alert("this is a test");
+		if(playerDead) return;
+
 		console.log("in button " + defenderExist)
-		if(defenderExist){
+
+		if(defenderExist){ //check if there is someone to fight
 
 			defender.damageRecieved(player.atk);
 			
+			//output attack text
 			$('#player-message').text(player.name + " does " + player.atk + " damage to " + defender.name + "!");
 			
+			//power up player
 			player.strengthen();
 
+			//if the defender dies
 			if(defender.getHp() <= 0){
-				$('#defender').empty();
+				$('#defender').empty();	//clear out defender space
 
-				if($('#enemies').is(':empty')) {
+
+				if($('#enemies').is(':empty')) {	//check if there are any enemies left to fight
+					//display victory text and restart button
 					$('#player-message').text("Well Done, you defeated all of your opponents!");
 					$('#ememy-message').empty();
 					$('#ememy-message').append($('<button>')
@@ -166,7 +176,7 @@ $(document).ready(function(){
 
 						}));
 				}
-				else{
+				else{ //else instruct user to pick a new defender
 					$('#player-message').text("You defeated " + defender.name + ", go pick another opponent to fight!");
 					
 					$('#ememy-message').empty();
@@ -175,13 +185,15 @@ $(document).ready(function(){
 
 			}	
 			
-			if(defenderExist){
+			if(defenderExist){	//if defender is active it fights back
 				player.damageRecieved(defender.counter);
 				
 				$('#ememy-message').text(defender.name + " strikes back with " + defender.counter + " damage to " + player.name + "!");
 
 				if(player.getHp() <= 0){
 					
+					playerDead = true;
+
 					$('#player-message').text("You've been defeated...GAME OVER.");
 					
 					$('#ememy-message').empty();
