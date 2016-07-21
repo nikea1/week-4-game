@@ -1,7 +1,25 @@
+h1 , h2, h3, h4, h5, h6{
+	color:black;
+}
+
+
+body{
+
+	background-image: url("../images/touhou_background.jpg");
+
+}
+
 img{
 	margin: 0 auto;
     display: block;
 }
+
+.container{
+	background-color: rgba(255, 255, 255, 0.5);
+	height: 600px;
+
+}
+
 
 .clearfix{
 	overflow: auto;
@@ -14,8 +32,10 @@ img{
 	border-width: 3px;
 	border-color: green;
     border-style: solid;
+    background-color: white;
     width: 150px;
     height: 120px;
+    color: black;
 
 }
 
@@ -25,6 +45,7 @@ img{
 
 .wait{
 	background-color: red;
+	color: black;
 }
 
 .defender{

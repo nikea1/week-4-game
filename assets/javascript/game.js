@@ -2,11 +2,11 @@
 $(document).ready(function(){
 
 	//used to create characters
-	function character(name, picture, hp, atk, counter){
+	function character(name, picture, hp, atk, counter, music){
 		this.name = name;
 		this.img = picture;
 		this.hp = hp;
-		this.status = "none";
+		this.themeSong = music;
 		this.atk = atk;
 		this.inc = atk;
 		this.counter = counter;
@@ -29,10 +29,11 @@ $(document).ready(function(){
 	var defender;
 	var defenderExist = false;
 
-	playerChoice[0] = new character("Obi-wan-Kenobi", "http://placehold.it/120x80", 120, 8, 24);
-	playerChoice[1] = new character("Luke Skywalker", "http://placehold.it/120x80", 100, 5, 5);
-	playerChoice[2] = new character("Darth Maul", "http://placehold.it/120x80", 180, 5, 25);
-	playerChoice[3] = new character("Darth Sidious", "http://placehold.it/120x80", 150, 4, 20);
+	playerChoice[0] = new character("Reimu Hakurei", "assets/images/Hakurei.png", 120, 8, 24, "assets/sounds/IN - Maidens Capriccio - Dream Battle.mp3");
+	playerChoice[1] = new character("Marisa Kirisame", "assets/images/Kirisame.png", 100, 5, 5, "assets/sounds/Love-coloured Master Spark.mp3");
+	playerChoice[2] = new character("Sakuya Izayoi", "assets/images/Izayoi.png", 180, 5, 25, "assets/sounds/(SWR) Flowering Night.mp3");
+	playerChoice[3] = new character("Youmu Konpaku", "assets/images/konpaku.png", 150, 4, 20, "assets/sounds/PCB - Hiroari Shoots a Strange Bird - Till When？.mp3");
+
 
 
 
@@ -50,6 +51,13 @@ $(document).ready(function(){
 		$("#characters").empty();
 
 		buildCard('#player', player, "player");
+
+		var audioElement = document.createElement('audio');
+	        audioElement.setAttribute('src', player.themeSong);
+	        audioElement.play();
+	        console.log(audioElement);
+
+
 		
 
 		//set wait array
@@ -82,7 +90,7 @@ $(document).ready(function(){
 		for(var i = 0; i < playerChoice.length; i++){
 			if(player != playerChoice[i]){
 				if(defender != playerChoice[i]){
-					if(playerChoice[i].getHp() >= 0){
+					if(playerChoice[i].getHp() > 0){
 				//wait.push(playerChoice[i]);
 
 						buildCard('#enemies', playerChoice[i], "wait", setDefender);
@@ -120,6 +128,8 @@ $(document).ready(function(){
 		var card_img = $('<img>')
 			.attr("src", value.img)
 			.attr("alt", "Player picture")
+			.width(120)
+			.height(80)
 
 		var card_health = $('<div>')
 			.addClass("character-health")
@@ -146,7 +156,7 @@ $(document).ready(function(){
 				$('#defender').empty();
 
 				if($('#enemies').is(':empty')) {
-					$('#player-message').text("Well Done Jedi Master you defeated all of your opponents!");
+					$('#player-message').text("Well Done, you defeated all of your opponents!");
 					$('#ememy-message').empty();
 					$('#ememy-message').append($('<button>')
 						.text('Restart')
