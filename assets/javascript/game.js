@@ -3,78 +3,160 @@ $(document).ready(function(){
 
 	//used to create characters
 	function character(name, picture, hp, atk, counter, music){
-		this.name = name;
-		this.img = picture;
-		this.hp = hp;
-		this.themeSong = music;
-		this.atk = atk;
-		this.inc = atk;
-		this.counter = counter;
+		this.name = name;		//character name
+		this.img = picture;		//character image
+		this.hp = hp;			//character health
+		this.themeSong = music;	//character's theme song
+		this.atk = atk;			//initial attack value
+		this.inc = atk;			//increment value
+		this.counter = counter;	//counter attack strength
 		
-		this.damageRecieved = function(dmg){
+		this.damageRecieved = function(dmg){	//calculates damage results
 			this.hp -= dmg;
 		}
 
-		this.strengthen = function(){
+		this.strengthen = function(){			//stregthens character each attack
 			this.atk += this.inc;
 		}
-		this.getHp = function(){
+		this.getHp = function(){				//get current hp
 			return this.hp;
 		}
 	}
 
-	var playerChoice = [];
-	var wait = [];
-	var player;
-	var defender;
-	var defenderExist = false;
-	var playerDead = false;
+	var playerChoice = [];		//list of players to pick
+	var player;					//character that player controls
+	var defender;				//active enemy to fight
+	var defenderExist = false;	//check if defender is active
+	var playerDead = false;		//check if player is dead
 
+	//character list
 	playerChoice[0] = new character("Reimu Hakurei", "assets/images/Hakurei.png", 120, 8, 24, "assets/sounds/IN - Maidens Capriccio - Dream Battle.mp3");
 	playerChoice[1] = new character("Marisa Kirisame", "assets/images/Kirisame.png", 100, 5, 5, "assets/sounds/Love-coloured Master Spark.mp3");
 	playerChoice[2] = new character("Sakuya Izayoi", "assets/images/Izayoi.png", 180, 5, 25, "assets/sounds/(SWR) Flowering Night.mp3");
 	playerChoice[3] = new character("Youmu Konpaku", "assets/images/Konpaku.png", 150, 4, 20, "assets/sounds/PCB - Hiroari Shoots a Strange Bird - Till When？.mp3");
 
-
-
-
-	//generates players
+	//generates all characters on webpage to choose from
 	for(var i = 0; i < playerChoice.length; i++){
-		console.log("outside loop "+playerChoice);
+		
+		//builds character at target and sets character data and classes and sets an onClick function
 		buildCard('#characters', playerChoice[i], "character-choice", setGame);
 	
-	}//end of for loop
+	}
 
+	//Attack button
+	$('button').on("click", function(){
+		
+		if(playerDead) return; //stops attacking when player is dead
+
+		if(defenderExist){ //check if there is someone to fight
+
+			defender.damageRecieved(player.atk);
+			
+			//output attack text
+			$('#player-message').text(player.name + " does " + player.atk + " damage to " + defender.name + "!");
+			
+			player.strengthen(); //power up player
+			
+			if(defender.getHp() <= 0){ //if the defender dies
+				
+				$('#defender').empty();	//clear out defender space
+
+				if($('#enemies').is(':empty')) {	//check if there are any enemies left to fight
+					
+					//display victory text and restart button
+					gameOverPrompt("Well Done, you defeated all of your opponents!");
+					
+				}
+				else{ //else instruct user to pick a new defender
+					$('#player-message').text("You defeated " + defender.name + ", go pick another opponent to fight!");
+					
+					$('#ememy-message').empty();
+				}
+				
+				defenderExist = false; //set flag to false
+
+			}	
+			
+			if(defenderExist){	//if defender is active it fights back
+				player.damageRecieved(defender.counter);
+				
+				$('#ememy-message').text(defender.name + " strikes back with " + defender.counter + " damage to " + player.name + "!");
+
+				if(player.getHp() <= 0){ //if player loses
+					
+					playerDead = true; //set flag to true
+
+					//display game over text and reset button
+					gameOverPrompt("You've been defeated...GAME OVER.")
+
+				}
+			}	
+
+		$('#player .character-health').text(player.hp); //update player's health
+		$('#defender .character-health').text(defender.hp);	//update defender's health
+		}
+		else{//if there is no active defender display this text
+		$('#player-message').text("There is no one to attack");
+		
+		}
+		
+	})
+
+	//outputs game result and reset button
+	function gameOverPrompt(string){
+		$('#player-message').text(string);
+					
+		$('#ememy-message').empty();
+		
+		//display reset button
+		$('#ememy-message').append($('<button>')
+			.text('Restart')
+			.on("click", function(){
+
+				location.reload();
+
+			}));
+
+	}
+	//sets game screen
 	function setGame(newPlayer){
 
-		player = newPlayer;
+		player = newPlayer;	//sets player's info
 
-		$("#characters").empty();
+		$("#characters").empty();	//clears out character list
 
-		buildCard('#player', player, "player");
+		buildCard('#player', player, "player"); //creates player on webpage
 
+		//plays player's theme song
 		var audioElement = document.createElement('audio');
 	        audioElement.setAttribute('src', player.themeSong);
 	        audioElement.play();
 	        console.log(audioElement);
 
 
-		
+	    //creates enemy wait list
+		setWaitList();
 
-		//set wait array
+			
+	}
+
+	//sets Enemy available list
+	function setWaitList(){
+		
 		for(var i = 0; i < playerChoice.length; i++){
 			if(player != playerChoice[i]){
-				
-				wait.push(playerChoice[i]);
+				if(defender != playerChoice[i]){
+					if(playerChoice[i].getHp() > 0){
 
-				buildCard('#enemies', playerChoice[i], "wait", setDefender);
-				
+						buildCard('#enemies', playerChoice[i], "wait", setDefender);
+					}
+				}
 			}
 
 		}
-		console.log(wait);		
 	}
 
+	//sets defender
 	function setDefender(newDefender){
 		
 		if (defenderExist) {return;}
@@ -84,27 +166,14 @@ $(document).ready(function(){
 		$('#enemies').empty();
 
 		buildCard('#defender', defender, "defender");
-		
 
-		//set wait array
+		//updates enemy list
+		setWaitList();
 
-		for(var i = 0; i < playerChoice.length; i++){
-			if(player != playerChoice[i]){
-				if(defender != playerChoice[i]){
-					if(playerChoice[i].getHp() > 0){
-				//wait.push(playerChoice[i]);
-
-						buildCard('#enemies', playerChoice[i], "wait", setDefender);
-					}
-				}
-			}
-
-		}
-		console.log(wait);
-		/**/
 
 	}
 
+	//creates character and click behaviour
 	function buildCard(target, value, newClass, functionOnClick){
 		var card_container = $('<div>')
 		.addClass("character-card " + newClass)
@@ -112,10 +181,7 @@ $(document).ready(function(){
 		.on("click", function(){
 
 			console.log("click", $(this).data("chara"));
-			//$(this).addClass("character-player").removeClass("character-choice");
-			//player = $(this).data("chara");
-
-			//player = ;
+			
 			if(functionOnClick != undefined)
 				functionOnClick($(this).data("chara"));
 
@@ -141,89 +207,6 @@ $(document).ready(function(){
 			card_container.append(card_health);
 			$(target).append(card_container);
 	}
-
-	//Attack button
-	$('button').on("click", function(){
-		//alert("this is a test");
-		if(playerDead) return;
-
-		console.log("in button " + defenderExist)
-
-		if(defenderExist){ //check if there is someone to fight
-
-			defender.damageRecieved(player.atk);
-			
-			//output attack text
-			$('#player-message').text(player.name + " does " + player.atk + " damage to " + defender.name + "!");
-			
-			//power up player
-			player.strengthen();
-
-			//if the defender dies
-			if(defender.getHp() <= 0){
-				$('#defender').empty();	//clear out defender space
-
-
-				if($('#enemies').is(':empty')) {	//check if there are any enemies left to fight
-					//display victory text and restart button
-					$('#player-message').text("Well Done, you defeated all of your opponents!");
-					$('#ememy-message').empty();
-					$('#ememy-message').append($('<button>')
-						.text('Restart')
-						.on("click", function(){
-
-							location.reload();
-
-						}));
-				}
-				else{ //else instruct user to pick a new defender
-					$('#player-message').text("You defeated " + defender.name + ", go pick another opponent to fight!");
-					
-					$('#ememy-message').empty();
-				}
-				defenderExist = false;
-
-			}	
-			
-			if(defenderExist){	//if defender is active it fights back
-				player.damageRecieved(defender.counter);
-				
-				$('#ememy-message').text(defender.name + " strikes back with " + defender.counter + " damage to " + player.name + "!");
-
-				if(player.getHp() <= 0){
-					
-					playerDead = true;
-
-					$('#player-message').text("You've been defeated...GAME OVER.");
-					
-					$('#ememy-message').empty();
-					
-					$('#ememy-message').append($('<button>')
-						.text('Restart')
-						.on("click", function(){
-
-							location.reload();
-
-						}));
-				}
-			}
-
-									
-			
-			
-			
-
-		$('#player .character-health').text(player.hp); //update player 
-		$('#defender .character-health').text(defender.hp);
-		}
-		else{
-		$('#player-message').text("There is no one to attack");
-		
-		}
-		//player.damageRecieved(defender.counter);
-		//defender.damageRecieved(player.atk);
-		//player.
-	})
 
 });
 
