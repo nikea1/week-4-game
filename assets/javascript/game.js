@@ -30,8 +30,8 @@ $(document).ready(function(){
 	var playerDead = false;		//check if player is dead
 
 	//character list
-	playerChoice[0] = new character("Reimu Hakurei", "assets/images/Hakurei.png", 120, 8, 24, "assets/sounds/IN - Maidens Capriccio - Dream Battle.mp3");
-	playerChoice[1] = new character("Marisa Kirisame", "assets/images/Kirisame.png", 100, 5, 5, "assets/sounds/Love-coloured Master Spark.mp3");
+	playerChoice[0] = new character("Reimu Hakurei", "assets/images/Hakurei.png", 120, 8, 12, "assets/sounds/IN - Maidens Capriccio - Dream Battle.mp3");
+	playerChoice[1] = new character("Marisa Kirisame", "assets/images/Kirisame.png", 110, 15, 5, "assets/sounds/Love-coloured Master Spark.mp3");
 	playerChoice[2] = new character("Sakuya Izayoi", "assets/images/Izayoi.png", 180, 5, 25, "assets/sounds/(SWR) Flowering Night.mp3");
 	playerChoice[3] = new character("Youmu Konpaku", "assets/images/Konpaku.png", 150, 4, 20, "assets/sounds/PCB - Hiroari Shoots a Strange Bird - Till When？.mp3");
 
