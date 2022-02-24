@@ -1,4 +1,4 @@
-# week-4-game - TOUHOU RP
+# Week-4-game - TOUHOU RP
 jqueary homework, a coding bootcamp assignment of making an RPG battle using jQueary
 
 Music by ZUN
