@@ -5,5 +5,5 @@ Music by ZUN
 
 Character Art by alphes
 
-Update: React Remake comming soon
+Update: A React remake of this project can be found [here](https://github.com/nikea1/react-rpg).
 
